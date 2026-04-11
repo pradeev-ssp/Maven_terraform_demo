@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  webapp:
+    # Notice we use a variable here! Jenkins will magically inject your Docker Hub username and image name later.
+    image: ${DOCKER_IMAGE}
+    container_name: java-maven-app
+    ports:
+      - "8080:8080"
+    restart: always
