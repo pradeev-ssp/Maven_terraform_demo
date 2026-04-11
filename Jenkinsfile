@@ -4,10 +4,10 @@ pipeline {
     environment {
         // We will configure these secure passwords in Jenkins shortly
         DOCKER_HUB_CREDS = 'docker-hub-credentials'
-        AWS_CREDS = 'aws-credentials'
+        AWS_CREDS = 'AWS-credentials'
         
         // IMPORTANT: Change 'yourusername' to your actual Docker Hub username!
-        DOCKER_IMAGE = "yourusername/java-maven-app:latest"
+        DOCKER_IMAGE = "pradeev812/java-maven-app:latest"
     }
 
     stages {
