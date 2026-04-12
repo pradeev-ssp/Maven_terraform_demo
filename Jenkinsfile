@@ -6,7 +6,7 @@ pipeline {
         DOCKER_HUB_CREDS = 'docker-hub-credentials'
         AWS_CREDS = 'AWS-credentials'
         
-        // IMPORTANT: Change 'yourusername' to your actual Docker Hub username!
+        
         DOCKER_IMAGE = "pradeev812/java-maven-app:latest"
     }
 
@@ -53,19 +53,19 @@ pipeline {
         stage('4. Deploy Application') {
             steps {
                 script {
-                    echo "Waiting 60 seconds for the new EC2 server to boot up and install Docker..."
-                    sleep time: 60, unit: 'SECONDS'
+                    echo "Waiting 100 seconds for the new EC2 server to boot up and install Docker..."
+                    sleep time: 100, unit: 'SECONDS'
                     
                     echo "Deploying to New EC2 Instance at ${env.EC2_IP}..."
-                    // 1. Secure the private key so SSH doesn't complain
-                    bat "icacls jenkins-tf-key /inheritance:r /grant:r \"%USERNAME%\":F"
+                    // 1. Secure the private key in the vault
+                    bat "icacls C:\\jenkins-keys\\jenkins-tf-key /inheritance:r /grant:r sspra:F"
                     
                     // 2. Copy the docker-compose file to the new AWS server
-                    bat "scp -o StrictHostKeyChecking=no -i jenkins-tf-key docker-compose.yaml ubuntu@%EC2_IP%:/home/ubuntu/"
+                    bat "scp -o StrictHostKeyChecking=no -i C:\\jenkins-keys\\jenkins-tf-key docker-compose.yaml ubuntu@%EC2_IP%:/home/ubuntu/"
                     
                     // 3. SSH into the server and start the app
                     bat """
-                    ssh -o StrictHostKeyChecking=no -i jenkins-tf-key ubuntu@%EC2_IP% "export DOCKER_IMAGE=${DOCKER_IMAGE} && sudo docker-compose up -d"
+                    ssh -o StrictHostKeyChecking=no -i C:\\jenkins-keys\\jenkins-tf-key ubuntu@%EC2_IP% "export DOCKER_IMAGE=${DOCKER_IMAGE} && sudo docker-compose up -d"
                     """
                 }
             }
