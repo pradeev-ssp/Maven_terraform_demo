@@ -41,8 +41,8 @@ resource "aws_security_group" "app_sg" {
 
 # 4. Build the actual EC2 Server
 resource "aws_instance" "app_server" {
-  ami           = "ami-0c7217cdde317cfec" # Standard Ubuntu 22.04 in us-east-1
-  instance_type = "t2.micro"              # Free tier!
+  ami           = "ami-0ea87431b78a82070" # Standard Ubuntu 22.04 in us-east-1
+  instance_type = "t3.small"              # Free tier!
   key_name      = aws_key_pair.app_key.key_name
   
   vpc_security_group_ids = [aws_security_group.app_sg.id]
