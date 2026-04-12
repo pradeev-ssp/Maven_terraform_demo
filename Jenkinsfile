@@ -53,9 +53,9 @@ pipeline {
         stage('4. Deploy Application') {
             steps {
                 script {
-                    echo "Waiting 60 seconds for the new EC2 server to boot up and install Docker..."
-                    sleep time: 60, unit: 'SECONDS'
-                    
+                    echo "Waiting 100 seconds for the new EC2 server to boot up and install Docker..."
+                    sleep time: 100, unit: 'SECONDS'
+
                     echo "Deploying to New EC2 Instance at ${env.EC2_IP}..."
                     // 1. Secure the private key so SSH doesn't complain
                     bat "icacls jenkins-tf-key /inheritance:r /grant:r \"%USERNAME%\":F"
