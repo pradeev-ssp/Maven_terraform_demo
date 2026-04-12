@@ -54,7 +54,7 @@ pipeline {
             steps {
                 script {
                     echo "Waiting 60 seconds for the new EC2 server to boot up and install Docker..."
-                    sleep time: 60, unit: 'SECONDS'
+                    sleep time: 100, unit: 'SECONDS'
                     
                     echo "Deploying to New EC2 Instance at ${env.EC2_IP}..."
                     // 1. Secure the private key so SSH doesn't complain
