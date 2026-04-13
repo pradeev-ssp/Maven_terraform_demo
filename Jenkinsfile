@@ -54,20 +54,22 @@ pipeline {
         stage('4. Deploy Application') {
             steps {
                 script {
-                    echo "Waiting 80 seconds for the new EC2 server to boot up and install Docker..."
-                    sleep time: 80, unit: 'SECONDS'
+                    echo "Waiting 60 seconds for the new EC2 server to boot up and install Docker..."
+                    sleep time: 60, unit: 'SECONDS'
                     
                     echo "Deploying to New EC2 Instance at ${env.EC2_IP}..."
-                    // 1. Secure the private key in the vault
-                    //bat "icacls C:\\jenkins-keys\\jenkins-tf-key /inheritance:r /grant:r sspra:F"
                     
-                    // 2. Copy the docker-compose file to the new AWS server
-                    bat "scp -o StrictHostKeyChecking=no -i C:\\jenkins-keys\\jenkins-tf-key docker-compose.yaml ubuntu@%EC2_IP%:/home/ubuntu/"
-                    
-                    // 3. SSH into the server and start the app
-                    bat """
-                    ssh -o StrictHostKeyChecking=no -i C:\\jenkins-keys\\jenkins-tf-key ubuntu@%EC2_IP% "export DOCKER_IMAGE=${DOCKER_IMAGE} && sudo docker-compose up -d"
-                    """
+                    // Let Jenkins perfectly manage the SSH key permissions for us!
+                    withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+                        
+                        // Copy the docker-compose file
+                        bat "scp -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" docker-compose.yaml %SSH_USER%@%EC2_IP%:/home/ubuntu/"
+                        
+                        // SSH into the server and start the app
+                        bat """
+                        ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@%EC2_IP% "export DOCKER_IMAGE=${DOCKER_IMAGE} && sudo docker-compose up -d"
+                        """
+                    }
                 }
             }
         }
