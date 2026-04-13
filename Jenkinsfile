@@ -59,8 +59,10 @@ pipeline {
                     
                     echo "Deploying to New EC2 Instance at ${env.EC2_IP}..."
                     
-                    // Let Jenkins perfectly manage the SSH key permissions for us!
                     withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+                        
+                        // THE FIX: Lock down the temporary file so OpenSSH accepts it!
+                        bat "icacls \"%SSH_KEY%\" /inheritance:r /grant:r sspra:F"
                         
                         // Copy the docker-compose file
                         bat "scp -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" docker-compose.yaml %SSH_USER%@%EC2_IP%:/home/ubuntu/"
