@@ -59,7 +59,7 @@ pipeline {
                     
                     echo "Deploying to New EC2 Instance at ${env.EC2_IP}..."
                     // 1. Secure the private key in the vault
-                    bat "icacls C:\\jenkins-keys\\jenkins-tf-key /inheritance:r /grant:r sspra:F"
+                    //bat "icacls C:\\jenkins-keys\\jenkins-tf-key /inheritance:r /grant:r sspra:F"
                     
                     // 2. Copy the docker-compose file to the new AWS server
                     bat "scp -o StrictHostKeyChecking=no -i C:\\jenkins-keys\\jenkins-tf-key docker-compose.yaml ubuntu@%EC2_IP%:/home/ubuntu/"
