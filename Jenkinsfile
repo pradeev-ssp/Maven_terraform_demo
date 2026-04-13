@@ -44,7 +44,8 @@ pipeline {
                         bat "terraform apply -auto-approve"
                         
                         // Extract the new Public IP address from Terraform and save it as a variable
-                        env.EC2_IP = bat(script: 'terraform output -raw server_public_ip', returnStdout: true).trim()
+                        bat "terraform output -raw server_public_ip > ip.txt"
+                        env.EC2_IP = readFile('ip.txt').trim()
                     }
                 }
             }
